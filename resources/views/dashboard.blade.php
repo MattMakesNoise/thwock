@@ -14,4 +14,12 @@
             </div>
         </div>
     </div>
+
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <a href="{{ route('rounds.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-6 px-12 rounded">
+                {{ __("Start Thwocking!") }}
+            </a>
+        </div>
+    </div>
 </x-app-layout>
