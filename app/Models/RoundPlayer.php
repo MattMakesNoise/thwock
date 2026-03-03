@@ -10,6 +10,8 @@ class RoundPlayer extends Model
     protected $fillable = [
         'round_id',
         'display_name',
+        'email',
+        'user_id',
         'position',
     ];
 

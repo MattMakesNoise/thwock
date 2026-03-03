@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Course;
 
 class StartController extends Controller
 {
@@ -13,7 +14,9 @@ class StartController extends Controller
 
     public function create()
     {
-        return view('rounds.create');
+        $courses = Course::all();
+
+        return view('rounds.create', compact('courses'));
     }
 
     public function store(Request $request)
