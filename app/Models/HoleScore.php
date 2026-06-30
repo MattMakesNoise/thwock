@@ -9,10 +9,16 @@ class HoleScore extends Model
 {
     protected $fillable = [
         'round_id',
+        'scorecard_id',
         'round_player_id',
         'hole_number',
         'strokes',
     ];
+
+    public function scorecard(): BelongsTo
+    {
+        return $this->belongsTo(Scorecard::class);
+    }
 
     public function round(): BelongsTo {
         return $this->belongsTo( Round::class );
@@ -22,4 +28,3 @@ class HoleScore extends Model
         return $this->belongsTo( RoundPlayer::class );
     }
 }
-

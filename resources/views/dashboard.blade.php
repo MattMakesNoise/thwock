@@ -1,23 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+        <h2 class="font-semibold text-xl text-thwock-darker dark:text-thwock-light leading-tight">
             {{ __('Dashboard') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+    <div class="content py-12">
+        <div>
+            <div class="bg-thwock-light dark:bg-thwock-dark overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6 text-thwock-darker dark:text-thwock-light">
                     {{ __("You're logged in!") }}
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <a href="{{ route('rounds.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-6 px-12 rounded">
+    <div class="content py-12">
+        <div>
+            <a href="{{ route('rounds.create') }}" class="bg-thwock-primary hover:bg-thwock-secondary hover:text-thwock-darker text-thwock-light font-bold py-6 px-12 rounded">
                 {{ __("Start Thwocking!") }}
             </a>
         </div>

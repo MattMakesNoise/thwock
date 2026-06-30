@@ -16,6 +16,26 @@ Route::get('/rounds/create', [StartController::class, 'create'])
     ->middleware(['auth', 'verified'])
     ->name('rounds.create');
 
+Route::post('/rounds/create', [StartController::class, 'store'])
+    ->middleware(['auth', 'verified'])
+    ->name('rounds.store');
+
+Route::get('/rounds/{round}', [StartController::class, 'show'])
+    ->middleware(['auth', 'verified'])
+    ->name('rounds.show');
+
+Route::patch('/rounds/{round}/scores/{holeScore}', [StartController::class, 'updateScore'])
+    ->middleware(['auth', 'verified'])
+    ->name('rounds.scores.update');
+
+Route::post('/rounds/{round}/scorecards', [StartController::class, 'joinScorecard'])
+    ->middleware(['auth', 'verified'])
+    ->name('rounds.scorecards.store');
+
+Route::post('/rounds/{round}/final-scores', [StartController::class, 'storeFinalScores'])
+    ->middleware(['auth', 'verified'])
+    ->name('rounds.final-scores.store');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

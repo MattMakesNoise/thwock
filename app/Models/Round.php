@@ -27,4 +27,19 @@ class Round extends Model
     {
         return $this->hasMany(RoundPlayer::class);
     }
+
+    public function scores(): HasMany
+    {
+        return $this->hasMany(HoleScore::class);
+    }
+
+    public function scorecards(): HasMany
+    {
+        return $this->hasMany(Scorecard::class);
+    }
+
+    public function finalScores(): HasMany
+    {
+        return $this->hasMany(FinalHoleScore::class);
+    }
 }

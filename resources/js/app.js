@@ -1,4 +1,6 @@
 import './bootstrap';
+import './add-player';
+import './score-round';
 
 import Alpine from 'alpinejs';
 

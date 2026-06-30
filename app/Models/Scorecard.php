@@ -6,14 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class RoundPlayer extends Model
+class Scorecard extends Model
 {
     protected $fillable = [
         'round_id',
-        'display_name',
-        'email',
         'user_id',
-        'position',
+        'name',
     ];
 
     public function round(): BelongsTo
@@ -21,13 +19,13 @@ class RoundPlayer extends Model
         return $this->belongsTo(Round::class);
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function scores(): HasMany
     {
         return $this->hasMany(HoleScore::class);
-    }
-
-    public function finalScores(): HasMany
-    {
-        return $this->hasMany(FinalHoleScore::class);
     }
 }
