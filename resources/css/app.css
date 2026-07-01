@@ -6,4 +6,16 @@
     .content {
         @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
     }
+
+    .btn {
+        @apply inline-flex items-center justify-center rounded px-6 py-4 font-bold transition ease-in-out duration-150 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-thwock-dark;
+    }
+
+    .btn-green {
+        @apply bg-thwock-primary text-thwock-light hover:bg-thwock-primary/80 focus:bg-thwock-primary/80 focus:ring-thwock-primary;
+    }
+
+    .btn-yellow {
+        @apply bg-thwock-secondary text-thwock-darker hover:bg-thwock-secondary/80 focus:bg-thwock-secondary/80 focus:ring-thwock-secondary;
+    }
 }

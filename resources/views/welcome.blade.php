@@ -24,11 +24,11 @@
 
                     <div class="flex flex-wrap gap-3">
                         @auth
-                            <a href="{{ url('/dashboard') }}" class="rounded bg-thwock-primary px-5 py-3 font-semibold text-thwock-light hover:bg-thwock-secondary hover:text-thwock-darker">
+                            <a href="{{ url('/dashboard') }}" class="rounded bg-thwock-primary px-5 py-3 font-semibold text-thwock-light hover:bg-thwock-primary/80">
                                 Dashboard
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="rounded bg-thwock-primary px-5 py-3 font-semibold text-thwock-light hover:bg-thwock-secondary hover:text-thwock-darker">
+                            <a href="{{ route('login') }}" class="rounded bg-thwock-primary px-5 py-3 font-semibold text-thwock-light hover:bg-thwock-primary/80">
                                 Log in
                             </a>
 

@@ -13,10 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         playerRow.dataset.index = nextIndex;
 
-        playerRow.querySelectorAll('input').forEach((input) => {
-            input.name = input.name.replace(/players\[\d+]/, `players[${nextIndex}]`);
-            input.value = '';
-            input.removeAttribute('autofocus');
+        playerRow.querySelectorAll('input, select').forEach((field) => {
+            field.name = field.name.replace(/players\[\d+]/, `players[${nextIndex}]`);
+            field.removeAttribute('autofocus');
+
+            if (field instanceof HTMLInputElement) {
+                field.value = field.type === 'number' ? '0' : '';
+            }
+
+            if (field instanceof HTMLSelectElement) {
+                field.value = 'all_par_4';
+            }
         });
 
         playersContainer.insertBefore(playerRow, addPlayerButton.closest('.form-control'));

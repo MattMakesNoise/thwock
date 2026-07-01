@@ -14,6 +14,8 @@ class RoundPlayer extends Model
         'email',
         'user_id',
         'position',
+        'scoring_mode',
+        'handicap_strokes',
     ];
 
     public function round(): BelongsTo
@@ -29,5 +31,14 @@ class RoundPlayer extends Model
     public function finalScores(): HasMany
     {
         return $this->hasMany(FinalHoleScore::class);
+    }
+
+    public function targetParForHole(Hole $hole): int
+    {
+        return match ($this->scoring_mode) {
+            'actual' => $hole->par,
+            'all_par_5' => 5,
+            default => 4,
+        };
     }
 }

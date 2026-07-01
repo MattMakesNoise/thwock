@@ -35,6 +35,8 @@ class StartController extends Controller
             'players' => ['required', 'array', 'min:1'],
             'players.*.display_name' => ['required', 'string', 'max:255'],
             'players.*.email' => ['nullable', 'email', 'max:255'],
+            'players.*.scoring_mode' => ['required', 'in:actual,all_par_4,all_par_5'],
+            'players.*.handicap_strokes' => ['required', 'integer', 'min:0', 'max:54'],
         ]);
 
         $round = DB::transaction(function () use ($validated, $request) {
@@ -51,6 +53,8 @@ class StartController extends Controller
                     'display_name' => $player['display_name'],
                     'email' => $player['email'] ?? null,
                     'position' => $index + 1,
+                    'scoring_mode' => $player['scoring_mode'],
+                    'handicap_strokes' => $player['handicap_strokes'],
                 ]);
             }
 

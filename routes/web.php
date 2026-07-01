@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CourseController;
 use App\Http\Controllers\StartController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,14 @@ Route::post('/rounds/{round}/scorecards', [StartController::class, 'joinScorecar
 Route::post('/rounds/{round}/final-scores', [StartController::class, 'storeFinalScores'])
     ->middleware(['auth', 'verified'])
     ->name('rounds.final-scores.store');
+
+Route::get('/courses/create', [CourseController::class, 'create'])
+    ->middleware(['auth', 'verified'])
+    ->name('courses.create');
+
+Route::post('/courses', [CourseController::class, 'store'])
+    ->middleware(['auth', 'verified'])
+    ->name('courses.store');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

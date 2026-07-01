@@ -95,15 +95,32 @@
                                         @foreach ($round->players as $player)
                                             @php
                                                 $score = $scorecard->scores->first(fn ($score) => $score->round_player_id === $player->id && $score->hole_number === $hole->hole_number);
+                                                $targetPar = $player->targetParForHole($hole);
+                                                $scoreVsTarget = $score->strokes - $targetPar;
+                                                $scoreVsActual = $score->strokes - $hole->par;
                                             @endphp
 
                                             <div
                                                 class="grid grid-cols-[1fr_auto] items-center gap-3 rounded border border-thwock-light-muted p-3 dark:border-thwock-light-muted/20"
                                                 data-score-row
                                                 data-score-url="{{ route('rounds.scores.update', [$round, $score]) }}"
+                                                data-target-par="{{ $targetPar }}"
+                                                data-actual-par="{{ $hole->par }}"
                                             >
                                                 <div class="min-w-0">
                                                     <p class="truncate font-medium">{{ $player->display_name }}</p>
+                                                    <p class="text-sm text-thwock-dark dark:text-thwock-light-muted">
+                                                        Target {{ $targetPar }}
+                                                        @if ($player->handicap_strokes > 0)
+                                                            · Handicap {{ $player->handicap_strokes }}
+                                                        @endif
+                                                    </p>
+                                                    <p class="text-sm font-medium text-thwock-primary dark:text-thwock-secondary">
+                                                        <span data-score-vs-target>{{ $scoreVsTarget > 0 ? '+' : '' }}{{ $scoreVsTarget }}</span> vs target
+                                                        @if ($player->scoring_mode !== 'actual')
+                                                            · <span data-score-vs-actual>{{ $scoreVsActual > 0 ? '+' : '' }}{{ $scoreVsActual }}</span> vs actual
+                                                        @endif
+                                                    </p>
                                                     <p class="hidden text-sm text-red-600" data-score-error>{{ __('Could not save. Try again.') }}</p>
                                                 </div>
 
