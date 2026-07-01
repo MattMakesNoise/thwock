@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\RoundPlayer;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -40,6 +41,11 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        RoundPlayer::query()
+            ->whereNull('user_id')
+            ->whereRaw('lower(email) = ?', [strtolower($user->email)])
+            ->update(['user_id' => $user->id]);
 
         event(new Registered($user));
 

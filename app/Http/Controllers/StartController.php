@@ -32,6 +32,8 @@ class StartController extends Controller
     {
         $validated = $request->validate([
             'course_id' => ['required', 'integer', 'exists:courses,id'],
+            'creator_scoring_mode' => ['required', 'in:actual,all_par_4,all_par_5'],
+            'creator_handicap_strokes' => ['required', 'integer', 'min:0', 'max:54'],
             'players' => ['required', 'array', 'min:1'],
             'players.*.display_name' => ['required', 'string', 'max:255'],
             'players.*.email' => ['nullable', 'email', 'max:255'],
@@ -48,11 +50,29 @@ class StartController extends Controller
 
             $course = Course::with('holes')->findOrFail($validated['course_id']);
 
-            foreach (array_values($validated['players']) as $index => $player) {
+            $round->players()->create([
+                'display_name' => $request->user()->name,
+                'email' => $request->user()->email,
+                'user_id' => $request->user()->id,
+                'position' => 1,
+                'scoring_mode' => $validated['creator_scoring_mode'],
+                'handicap_strokes' => $validated['creator_handicap_strokes'],
+            ]);
+
+            $additionalPlayers = collect($validated['players'])
+                ->reject(fn ($player) => isset($player['email']) && strcasecmp($player['email'], $request->user()->email) === 0)
+                ->values();
+
+            foreach ($additionalPlayers as $index => $player) {
+                $matchedUser = isset($player['email'])
+                    ? User::whereRaw('lower(email) = ?', [strtolower($player['email'])])->first()
+                    : null;
+
                 $round->players()->create([
                     'display_name' => $player['display_name'],
                     'email' => $player['email'] ?? null,
-                    'position' => $index + 1,
+                    'user_id' => $matchedUser?->id,
+                    'position' => $index + 2,
                     'scoring_mode' => $player['scoring_mode'],
                     'handicap_strokes' => $player['handicap_strokes'],
                 ]);

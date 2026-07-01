@@ -42,6 +42,7 @@ class DemoRoundSeeder extends Seeder
             $mattPlayer = $round->players()->create([
                 'display_name' => 'Matt',
                 'email' => 'matt@example.com',
+                'user_id' => $matt->id,
                 'position' => 1,
                 'scoring_mode' => 'all_par_4',
                 'handicap_strokes' => 1,

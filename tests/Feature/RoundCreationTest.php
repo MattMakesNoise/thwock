@@ -26,6 +26,8 @@ class RoundCreationTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('rounds.store'), [
             'course_id' => $course->id,
+            'creator_scoring_mode' => 'all_par_4',
+            'creator_handicap_strokes' => 0,
             'players' => [
                 [
                     'display_name' => 'Matt',
@@ -55,9 +57,19 @@ class RoundCreationTest extends TestCase
 
         $this->assertDatabaseHas('round_players', [
             'round_id' => $round->id,
+            'display_name' => $user->name,
+            'email' => $user->email,
+            'user_id' => $user->id,
+            'position' => 1,
+            'scoring_mode' => 'all_par_4',
+            'handicap_strokes' => 0,
+        ]);
+
+        $this->assertDatabaseHas('round_players', [
+            'round_id' => $round->id,
             'display_name' => 'Matt',
             'email' => 'matt@example.com',
-            'position' => 1,
+            'position' => 2,
             'scoring_mode' => 'all_par_4',
             'handicap_strokes' => 0,
         ]);
@@ -66,14 +78,50 @@ class RoundCreationTest extends TestCase
             'round_id' => $round->id,
             'display_name' => 'Sam',
             'email' => null,
-            'position' => 2,
+            'position' => 3,
             'scoring_mode' => 'all_par_5',
             'handicap_strokes' => 18,
         ]);
 
-        $this->assertDatabaseCount('hole_scores', 4);
+        $this->assertDatabaseCount('hole_scores', 6);
         $this->assertDatabaseCount('scorecards', 1);
         $this->assertSame([4], HoleScore::query()->pluck('strokes')->unique()->values()->all());
+    }
+
+    public function test_existing_users_are_linked_to_round_players_by_email(): void
+    {
+        $owner = User::factory()->create();
+        $existingPlayer = User::factory()->create(['email' => 'chris@example.com']);
+        $course = Course::create(['name' => 'Mousehold']);
+        $course->holes()->create(['hole_number' => 1, 'par' => 4]);
+
+        $this->actingAs($owner)->post(route('rounds.store'), [
+            'course_id' => $course->id,
+            'creator_scoring_mode' => 'all_par_4',
+            'creator_handicap_strokes' => 0,
+            'players' => [
+                [
+                    'display_name' => 'Chris',
+                    'email' => 'chris@example.com',
+                    'scoring_mode' => 'all_par_4',
+                    'handicap_strokes' => 0,
+                ],
+            ],
+        ]);
+
+        $this->assertDatabaseHas('round_players', [
+            'display_name' => $owner->name,
+            'email' => $owner->email,
+            'user_id' => $owner->id,
+            'position' => 1,
+        ]);
+
+        $this->assertDatabaseHas('round_players', [
+            'display_name' => 'Chris',
+            'email' => 'chris@example.com',
+            'user_id' => $existingPlayer->id,
+            'position' => 2,
+        ]);
     }
 
     public function test_round_requires_at_least_one_player(): void
@@ -83,6 +131,8 @@ class RoundCreationTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('rounds.store'), [
             'course_id' => $course->id,
+            'creator_scoring_mode' => 'all_par_4',
+            'creator_handicap_strokes' => 0,
             'players' => [],
         ]);
 
@@ -98,6 +148,8 @@ class RoundCreationTest extends TestCase
 
         $this->actingAs($user)->post(route('rounds.store'), [
             'course_id' => $course->id,
+            'creator_scoring_mode' => 'all_par_4',
+            'creator_handicap_strokes' => 0,
             'players' => [
                 ['display_name' => 'Matt', 'email' => null, 'scoring_mode' => 'all_par_4', 'handicap_strokes' => 0],
             ],
@@ -126,6 +178,8 @@ class RoundCreationTest extends TestCase
 
         $this->actingAs($owner)->post(route('rounds.store'), [
             'course_id' => $course->id,
+            'creator_scoring_mode' => 'all_par_4',
+            'creator_handicap_strokes' => 0,
             'players' => [
                 ['display_name' => 'Matt', 'email' => null, 'scoring_mode' => 'all_par_4', 'handicap_strokes' => 0],
             ],
@@ -137,7 +191,7 @@ class RoundCreationTest extends TestCase
 
         $response->assertRedirect(route('rounds.show', $round, absolute: false));
         $this->assertDatabaseCount('scorecards', 2);
-        $this->assertDatabaseCount('hole_scores', 2);
+        $this->assertDatabaseCount('hole_scores', 4);
 
         $ownerScore = Scorecard::where('user_id', $owner->id)->first()->scores()->first();
         $secondScore = Scorecard::where('user_id', $secondScorer->id)->first()->scores()->first();
@@ -167,6 +221,8 @@ class RoundCreationTest extends TestCase
 
         $this->actingAs($owner)->post(route('rounds.store'), [
             'course_id' => $course->id,
+            'creator_scoring_mode' => 'all_par_4',
+            'creator_handicap_strokes' => 0,
             'players' => [
                 ['display_name' => 'Matt', 'email' => null, 'scoring_mode' => 'all_par_4', 'handicap_strokes' => 0],
             ],
@@ -183,8 +239,8 @@ class RoundCreationTest extends TestCase
         ]);
 
         $response->assertRedirect(route('rounds.show', $round, absolute: false));
-        $this->assertDatabaseCount('final_hole_scores', 2);
-        $this->assertSame(8, FinalHoleScore::sum('strokes'));
+        $this->assertDatabaseCount('final_hole_scores', 4);
+        $this->assertSame(16, FinalHoleScore::sum('strokes'));
         $this->assertDatabaseHas('rounds', [
             'id' => $round->id,
             'status' => 'final',
@@ -199,6 +255,8 @@ class RoundCreationTest extends TestCase
 
         $this->actingAs($user)->post(route('rounds.store'), [
             'course_id' => $course->id,
+            'creator_scoring_mode' => 'all_par_4',
+            'creator_handicap_strokes' => 0,
             'players' => [
                 ['display_name' => 'Matt', 'email' => null, 'scoring_mode' => 'all_par_4', 'handicap_strokes' => 0],
             ],
